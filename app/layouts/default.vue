@@ -36,19 +36,12 @@
   });
 
   useSeoMeta({
-    titleTemplate: `%s / ${unref(siteData)?.globals.title}`,
+    titleTemplate: `%s ${unref(siteData)?.globals.title}`,
     ogSiteName: unref(siteData)?.globals.title,
   });
 
   
   onMounted(() => {
-    if (!isVisualEditingEnabled.value) return;
-      apply({
-        elements: [navigation.value?.navigationRef as HTMLElement, footer.value?.footerRef as HTMLElement],
-        onSaved: () => {
-          refresh();
-        },
-      });
     setTimeout(() => { loading.value = false }, 800) // example delay
   })
 
