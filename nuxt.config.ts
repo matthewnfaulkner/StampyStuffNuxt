@@ -15,7 +15,6 @@ export default defineNuxtConfig({
     '@nuxt/scripts',
     '@nuxt/ui',
     '@nuxt/test-utils',
-    '@nuxtjs/shopify',
     '@primevue/nuxt-module',
     '@nuxtjs/i18n',
     'nuxt-directus',
