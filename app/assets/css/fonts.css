@@ -1,0 +1,26 @@
+/* Unkempt Bold */
+@font-face {
+  font-family: 'Unkempt';
+  src: url('../fonts/Unkempt-Bold.ttf') format('truetype');
+  font-weight: 700; /* bold */
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Unkempt Regular */
+@font-face {
+  font-family: 'Unkempt';
+  src: url('../fonts/Unkempt-Regular.ttf') format('truetype');
+  font-weight: 400; /* normal */
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Lexend Medium */
+@font-face {
+  font-family: 'Lexend';
+  src: url('../fonts/Lexend-Medium.ttf') format('truetype');
+  font-weight: 500; /* medium */
+  font-style: normal;
+  font-display: swap;
+}

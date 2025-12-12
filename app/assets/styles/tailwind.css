@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .dark .text-gray-100 {
+    --tw-text-opacity: 1;
+  }
+}
+
+@layer components {
+  .bg-primary {
+    background-color: var(--color-primary);
+  }
+
+  .bg-secondary {
+    background-color: var(--color-secondary);
+  }
+
+  .bm-menu {
+    @apply bg-secondary text-white !important;
+  }
+
+
+  .text-stroke {
+    -webkit-text-stroke-color: var(--color-stroke);
+    -webkit-text-stroke-width: var(--stroke-width);
+  }
+
+  .text-primary {
+    color: var(--color-text);
+  }
+}
