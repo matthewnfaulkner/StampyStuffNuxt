@@ -213,7 +213,7 @@ export interface BlockRichtext {
 
 export interface Category {
 	/** @primaryKey */
-	id: number;
+	id: string;
 	sort?: number | null;
 	title?: string | null;
 	is_active?: boolean | null;
@@ -223,7 +223,7 @@ export interface Category {
 
 export interface Customer{
 	/** @primaryKey */
-	id: number;
+	id: string;
 	date_created?: string | null;
 	user_created?: DirectusUser | string | null;
 	date_updated?: string | null;
@@ -481,7 +481,7 @@ export interface Post {
 
 export interface Product {
 	/** @primaryKey */
-	id: number;
+	id: string;
 	date_created?: string | null;
 	user_created?: DirectusUser | string | null;
 	date_updated?: string | null;
@@ -499,7 +499,7 @@ export interface Product {
 
 export interface ProductField {
 	/** @primaryKey */
-	id: number;
+	id: string;
 	/** @description Unique field identifier, not shown to users (lowercase, hyphenated) */
 	name?: string | null;
 	/** @description Input type for the field */
@@ -538,7 +538,7 @@ export interface ProductImage {
 
 export interface ProductVariant {
 	/** @primaryKey */
-	id: number;
+	id: string;
 	product: Product;
 	sku?: string | null;
 	size?: string | null;
@@ -551,14 +551,14 @@ export interface ProductVariant {
 
 export interface ProductVariantProductField {
 	/** @primaryKey */
-	id: number;
+	id: string;
 	product_variants_id?: ProductVariant[];
 	product_fields_id?: ProductField[];
 }
 
 export interface Order {
 	/** @primaryKey */
-	id: number;
+	id: string;
 	date_created?: string | null;
 	user_created?: DirectusUser | string | null;
 	date_updated?: string | null;
@@ -582,7 +582,7 @@ export interface Order {
 
 export interface OrderItem {
 	/** @primaryKey */
-	id: number;
+	id: string;
 	order: Order;
 	sort?: number | null;
 	product: Product;
@@ -595,7 +595,7 @@ export interface OrderItem {
 
 export interface OrderItemSubmission {
 	/** @primaryKey */
-	id: number;
+	id: string;
 	orderItem: OrderItem;
 	sort?: number | null;
 	field?: ProductField | string | null;

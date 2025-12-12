@@ -8,6 +8,7 @@ import DirectusSvg from '~/components/shared/DirectusSvg.vue';
 import type { Link, Section } from 'lucide-vue-next';
 import type Tagline from '~/components/base/Tagline.vue';
 const { enabled, state } = useLivePreview();
+const pageUrl = useRequestURL();
 // Handle Live Preview adding version=main which is not required when fetching the main version.
 const route = useRoute();
 const version = route.query.version === 'main' ? undefined : (route.query.version as string);
@@ -55,6 +56,14 @@ blocks.forEach(block => {
   if (block && typeof block.collection === "string" && block.collection in indexPageBlocks) {
     indexPageBlocks[block.collection as keyof PageBlocks].push(block?.item);
   }
+});
+
+useSeoMeta({
+	title: page.value?.seo?.title || page.value?.title || '',
+	description: page.value?.seo?.meta_description || '',
+	ogTitle: page.value?.seo?.title || page.value?.title || '',
+	ogDescription: page.value?.seo?.meta_description || '',
+	ogUrl: pageUrl.toString(),
 });
 
 </script>

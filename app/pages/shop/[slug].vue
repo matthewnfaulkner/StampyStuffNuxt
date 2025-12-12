@@ -96,7 +96,6 @@ const { data, pending, error } = await useAsyncData(
   }
 );
 
-
 const product = computed(() => data.value);
 
 // 🔍 Watch whenever radio changes

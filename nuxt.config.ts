@@ -60,4 +60,22 @@ export default defineNuxtConfig({
     directusServerToken: process.env.DIRECTUS_SERVER_TOKEN,
     directusFormToken: process.env.DIRECTUS_FORM_TOKEN
   },
+  vue: {
+          propsDestructure: true,
+  },
+  ssr: true,
+  // Image Configuration - https://image.nuxt.com/providers/directus
+  image: {
+          providers: {
+                  directus: {
+                          provider: 'directus',
+                          options: {
+                                  baseURL: `${process.env.DIRECTUS_URL}/assets/`,
+                          },
+                  },
+                  local: {
+                          provider: 'ipx',
+                  },
+          },
+  },
 })

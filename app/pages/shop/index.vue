@@ -5,6 +5,7 @@ import { productVariantFields } from '~/types/fields';
 const { $directus, $readItems } = useNuxtApp()
 const route = useRoute()
 const page: Ref<Page | null> = ref(null)
+const pageUrl = useRequestURL();
 
 const { locale } = useI18n()
 const toast = useToast()
@@ -42,8 +43,16 @@ const { data, pending, error } = await useAsyncData(
   }
 );
 
+useSeoMeta({
+	title: page.value?.seo?.title || page.value?.title || '',
+	description: page.value?.seo?.meta_description || '',
+	ogTitle: page.value?.seo?.title || page.value?.title || '',
+	ogDescription: page.value?.seo?.meta_description || '',
+	ogUrl: pageUrl.toString(),
+});
+
 const products = computed(() => data.value);
-console.log(products.value)
+
 </script>
 
 <template>
