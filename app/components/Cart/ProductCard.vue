@@ -12,7 +12,7 @@ const props = defineProps<ProductVariant>();
     <div class="flex items-center justify-between">
         <div class="flex items-start space-x-2">
             <UButton outlined>
-                <img :src="`${$directus.url}assets/${props.image?.filename_disk}?width=600`" :alt="props.product.title" class="w-40 rounded-md" />
+                <SharedDirectusImage :uuid="props.image"></SharedDirectusImage>
             </UButton>
         </div>
         <div class="space-y-1">
