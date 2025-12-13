@@ -98,6 +98,7 @@ useSeoMeta({
     </UButton>
   </template>
     <DirectusImage
+        v-if="hero.image"
 				:uuid="hero.image"
 				:alt="hero.tagline || hero.headline || 'Hero Image'"
 				:fill="true"

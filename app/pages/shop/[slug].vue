@@ -68,7 +68,7 @@ const { data, pending, error } = await useAsyncData(
       $readItems('products', {
         filter: { slug: { _eq: slug.value } },
         fields: productFields,
-        limit: 1,
+        limit: 20,
       })
     );
     if (!products.length) {
