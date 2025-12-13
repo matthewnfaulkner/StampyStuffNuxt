@@ -13,7 +13,7 @@ withDefaults(defineProps<HeadlineProps>(), {
 	<component
 		:is="as"
 		v-if="headline"
-		:class="`font-heading text-foreground font-normal text-4xl md:text-5xl lg:text-headline`"
+		:class="`font-header text-foreground font-normal text-4xl md:text-5xl lg:text-headline`"
 	>
 		{{ headline }}
 	</component>

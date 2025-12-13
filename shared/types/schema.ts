@@ -237,7 +237,7 @@ export interface Customer{
 }
 
 export interface CartItem extends ProductVariant {
-	quantity? : number | null;
+	quantity: number;
 }
 
 export interface CustomerAddress {

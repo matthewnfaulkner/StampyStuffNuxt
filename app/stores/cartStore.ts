@@ -2,13 +2,19 @@
 import { useLocalStorage } from '@vueuse/core'
 import { type ProductVariant, type CartItem } from '#shared/types/schema';
 import { ref, computed } from 'vue'
+import { defineStore } from 'pinia'
+import { createPinia } from 'pinia'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+
+const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
 
 export const useCartStore = defineStore('cartStore', () => {
     const cart = useLocalStorage<CartItem[]>('cart', []);
 
     // total products in the cart
     const totalCartProducts = computed(() => {
-        return cart.value.length;
+        return cart.value.map(item => item.quantity).reduce((a,b) => a+b);
     });
 
     const productQuantity = computed(() => (productId: number) => {
@@ -26,7 +32,6 @@ export const useCartStore = defineStore('cartStore', () => {
         // check if the product exists in the cart
 
         const item = cart.value.find((item) => item.id === product.id);
-        console.log(product)
         if (item) {
             if (item.quantity) {
                 // if it does exist increase the quantity
@@ -62,4 +67,7 @@ export const useCartStore = defineStore('cartStore', () => {
         addProductToCart,
         removeProductFromCart
     }
+},  
+{
+    persist: true,
 })

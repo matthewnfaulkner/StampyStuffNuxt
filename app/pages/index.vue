@@ -14,6 +14,8 @@ const route = useRoute();
 const version = route.query.version === 'main' ? undefined : (route.query.version as string);
 const { $directus, $readItems, $rive } = useNuxtApp();
 const { setAttr } = useVisualEditing();
+const { app } = useRuntimeConfig()
+
 const permalink = withoutTrailingSlash(withLeadingSlash(route.path));
 const {
 	data: page,
@@ -78,7 +80,7 @@ useSeoMeta({
     :orientation="hero.layout == 'image_center' ? 'vertical' : 'horizontal'"
     class="text-secondary-700"
     :ui="{
-      wrapper: 'lg:ml-5 xl:ml-30 font-header',
+      wrapper: 'font-header',
       title: 'font-header text-secondary',
       links: 'font-sans',  
       description: 'text-secondary-700',
@@ -109,7 +111,7 @@ useSeoMeta({
 				"
 			/>
   </UPageHero>
-  <USeparator size="xs" color="secondary" :avatar="{ src: '/logo.svg', size: '3xl', class: 'bg-transparent' }" />
+  <USeparator size="xs" color="secondary" :avatar="{ src: `${app.baseURL}logo.svg`, size: '3xl', class: 'bg-transparent' }" />
   <UPageSection v-for="(plans) in indexPageBlocks.block_pricing"
     :title="plans.headline || ''" 
     :description="plans.tagline || ''"
@@ -144,12 +146,12 @@ useSeoMeta({
               >
               <template #header>
                 <div class="flex flex-col items-center gap-2 p-4 rounded-t-xl">
-                    <DirectusSvg
+                    <DirectusImage
                     v-if="plan.image"
                     :uuid="plan.image"
                     :alt="plan.title || plan.title || 'Pricing Card Image'"
                     :fill="true"
-                    class="w-40 h-40 mx-auto rounded-full object-cover absolute -top-25 md:-top-30 lg:-top-25"
+                    class="w-40 mx-auto object-cover absolute -top-25 md:-top-30 lg:-top-25"
                   />
                   </div>
               </template>

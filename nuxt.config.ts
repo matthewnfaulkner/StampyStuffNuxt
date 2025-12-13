@@ -19,6 +19,7 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     'nuxt-directus',
     '@pinia/nuxt',
+    'pinia-plugin-persistedstate/nuxt',
   ],
   primevue: {
         options: {
