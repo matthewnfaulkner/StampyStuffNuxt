@@ -24,7 +24,7 @@ const { data, pending, error } = await useAsyncData(
     const products = await $directus.request(
       $readItems('product_variants', {
         fields: productVariantFields,
-        limit: 1,
+        limit: 20,
       })
     );
     if (!products.length) {

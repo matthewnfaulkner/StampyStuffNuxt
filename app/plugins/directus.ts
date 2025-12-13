@@ -7,7 +7,7 @@
     createItems,
     createItem,
 } from "@directus/sdk";
-import type { DirectusSchema } from "~/directus";
+import type { DirectusSchema } from '../../directus';
 
 const directus = createDirectus<DirectusSchema>(
     "http://localhost:8055/",

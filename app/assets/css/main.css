@@ -73,19 +73,19 @@
 
     --ui-border: var(--color-secondary-800);
 
-    --p-menubar-background: var(--color-secondary-500);
-    --p-menubar-border-color: var(--p-menubar-background);
-    --p-menubar-item-focus-background: var(--color-secondary-700);
-    --p-menubar-submenu-background: var(--color-secondary);
+    --p-menubar-background: var(--color-secondary-500)!important;
+    --p-menubar-border-color: var(--p-menubar-background)!important;
+    --p-menubar-item-focus-background: var(--color-secondary-700)!important;
+    --p-menubar-submenu-background: var(--color-secondary)!important;
 }
 
 .dark{
     --ui-bg: var(--color-secondary-950);
     --ui-border: var(--color-secondary-200);
 
-    --p-menubar-background: var(--color-secondary-700);
-    --p-menubar-border-color: var(--p-menubar-background);
-    --p-menubar-item-focus-background: var(--color-secondary-700);
-    --p-menubar-submenu-background: var(--color-secondary-700);
+    --p-menubar-background: var(--color-secondary-700)!important;
+    --p-menubar-border-color: var(--p-menubar-background)!important;
+    --p-menubar-item-focus-background: var(--color-secondary-700)!important;
+    --p-menubar-submenu-background: var(--color-secondary-700)!important;
 }
 
