@@ -75,7 +75,7 @@ useSeoMeta({
     :title="hero.headline || ''"
     :description="hero.description || ''"
     :headline="hero.tagline || ''"
-    orientation="horizontal"
+    :orientation="hero.layout == 'image_center' ? 'vertical' : 'horizontal'"
     class="text-secondary-700"
     :ui="{
       wrapper: 'lg:ml-5 xl:ml-30 font-header',
