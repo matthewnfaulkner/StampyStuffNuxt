@@ -82,8 +82,7 @@ const products = computed(() => data.value);
         <div v-for="(product_field) in product.product_fields">
           {{ product_field }}
         </div>
-        
-              <img :src="`${$directus.url}assets/${product?.image?.filename_disk}?width=300`" :alt="product.size" class="w-full" />
+              <SharedDirectusImage :uuid = product.image />
               <div class="text-xl">{{ product.product.title }}</div>
               <div v-html="product.size"></div>
               <div class="text-right">RM {{ product.price }}</div>

@@ -107,32 +107,16 @@ export const productFields = [
     'slug',
     'title',
     'description',
-    {
-        thumbnail: [
-            'filename_disk'
-        ]
-    },
-    {
-        images: [
-            'id',
-            {
-                file: [
-                    'filename_disk'
-                ]
-            }
-        ]
-    },
+	'thumbnail',
+	{ images: ['id','file'] },
     {
         variants: [
             'id',
             'price',
             'size',
             'description',
-            {
-                image: [
-                    'filename_disk'
-                ]
-            },
+			'image',
+
             {
                 product: [
                     'id',
@@ -170,11 +154,7 @@ export const productVariantFields = [
     'price',
     'size',
     'description',
-    {
-        image: [
-            'filename_disk'
-        ]
-        },
+	'image',
     {
         product: [
             'id',

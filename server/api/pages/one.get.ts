@@ -123,7 +123,7 @@ const pageFields = [
  */
 export default defineEventHandler(async (event) => {
 	const query = getQuery(event);
-
+	
 	const { preview, token: rawToken, permalink: rawPermalink, id, version } = query;
 
 	// Normalize permalink: ensure it starts with / and doesn't end with /

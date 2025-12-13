@@ -4,6 +4,7 @@ import { productFields } from '~/types/fields';
 import { ref, watch } from 'vue'
 import { useToast } from '@nuxt/ui/runtime/composables/useToast.js';
 import { CartSlideover } from '#components'
+import type DirectusImageVue from '~/components/shared/DirectusImage.vue';
 
 const { $directus, $readItems } = useNuxtApp()
 const route = useRoute()
@@ -135,10 +136,10 @@ const isDisabled = computed(() => !selectedVariant.value)
 const images = computed(() => {
 
   const productImages =
-    product.value.images?.map(v => v.file.filename_disk).filter(Boolean) || []
+    product.value.images?.map(v => v.file).filter(Boolean) || []
   
   const variantImages =
-    product.value.variants?.map(v => v.image.filename_disk).filter(Boolean) || []
+    product.value.variants?.map(v => v.image).filter(Boolean) || []
 
   return [...productImages, ...variantImages]
 })
@@ -189,18 +190,18 @@ function select(index: number) {
             class="w-full w-100 mx-auto"
             @select="onSelect"
           >
-          <img :src="`${$directus.url}assets/${item}?width=600`" width="" height="" class="rounded-lg max-w-full">
-    </UCarousel>
+          <SharedDirectusImage :uuid="item" class="rounded-lg max-w-full"/>
+        </UCarousel>
 
     <div class="flex gap-1 justify-center pt-4 max-w-xs mx-auto">
       <div
         v-for="(item, index) in images"
         :key="index"
-        class="size-11 opacity-25 hover:opacity-100 transition-opacity"
+        class="size-20 opacity-25 hover:opacity-100 transition-opacity"
         :class="{ 'opacity-100': activeIndex === index }"
         @click="select(index)"
       >
-        <img :src="`${$directus.url}assets/${item}?width=600`" width="44" height="44" class="rounded-lg">
+        <SharedDirectusImage :uuid="item"/>
       </div>
     </div>
       </div>  

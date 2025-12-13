@@ -49,7 +49,7 @@
 </script>
 <template>
 
-    <StickyHeader />
+    <StickyHeader/>
     <div>
         <div v-if="loading" class="flex items-center justify-center h-screen">
           <StampySpinner :size="40" />
@@ -84,3 +84,9 @@
       </template>
     </UFooter>
 </template>
+
+<style>
+  [v-cloak] {
+    display: none;
+  }
+</style>

@@ -7,6 +7,11 @@ import StampyMenubar from '@/components/StampyMenubar/StampyMenubar.vue';
 
 
 const headerRef = ref(null);
+const loaded = ref(false);
+
+const onMenubarLoaded = () => {
+  loaded.value = true;
+};
 
 // eslint-disable-next-line no-unused-vars
 const { styles } = useFixedHeader(headerRef);
@@ -16,9 +21,9 @@ const { styles } = useFixedHeader(headerRef);
 export default { components: { StampyMenubar } };
 
 </script><template>
-  <header class="Header" ref="headerRef"
+  <header class="Header" ref="headerRef" v-show="loaded"
     :style="styles">
-      <StampyMenubar />
+      <StampyMenubar @loaded="onMenubarLoaded"/>
   </header>
 </template>
 <style>
@@ -40,4 +45,7 @@ export default { components: { StampyMenubar } };
     color: white;
   }
 
+  [v-cloak] {
+    display: none;
+  }
 </style>

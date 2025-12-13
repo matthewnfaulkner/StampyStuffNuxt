@@ -1,6 +1,6 @@
 <template>
     <div class="card">
-        <Menubar :model="items" breakpoint="768px" class="bg-secondary font-header">
+        <Menubar :model="items" breakpoint="768px" class="bg-secondary font-header hidden">
             <template #start>
                 <ULink as="h1" active-class="onhome" class="text-white text-xl lg:text-3xl hover:text-primary" to="/">Stampy Stuff</ULink>
             </template>
@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 // eslint-disable-next-line import/extensions
 import Menubar from 'primevue/menubar';
 import IconShop from '../Icons/IconShop.vue';
@@ -52,6 +52,13 @@ useRouter();
 
 const route = useRoute();
 
+const emit = defineEmits<{
+  (e: 'loaded'): void
+}>();
+
+onMounted(() => {
+  emit('loaded'); // notify parent that menu is ready
+});
 
 const items = computed(() => [
   {
@@ -157,5 +164,9 @@ const isLinkActive = (itemRoute: string) => {
 
 .onhome{
   color: var(--color-primary)!important
+}
+
+[v-cloak] {
+  display: none !important;
 }
 </style>
