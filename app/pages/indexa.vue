@@ -13,7 +13,8 @@ const pageUrl = useRequestURL();
 const route = useRoute();
 const version = route.query.version === 'main' ? undefined : (route.query.version as string);
 const { $directus, $readItems, $rive } = useNuxtApp();
-const { setAttr } = useVisualEditing();
+const { isVisualEditingEnabled, apply, setAttr } = useVisualEditing();
+
 const { app } = useRuntimeConfig()
 
 const permalink = withoutTrailingSlash(withLeadingSlash(route.path));
@@ -68,6 +69,34 @@ useSeoMeta({
 	ogUrl: pageUrl.toString(),
 });
 
+// Helper functions for Visual Editing
+function applyVisualEditing() {
+	apply({
+		onSaved: async () => {
+			await refresh();
+		},
+	});
+}
+
+function applyVisualEditingButton() {
+	apply({
+		elements: document.querySelector('#visual-editing-button') as HTMLElement,
+		customClass: 'visual-editing-button-class',
+		onSaved: async () => {
+			await refresh();
+			// This makes sure the visual editor elements are updated after the page is refreshed. In case you've added new blocks to the page.
+			await nextTick();
+			applyVisualEditing();
+		},
+	});
+}
+
+
+onMounted(() => {
+	if (!isVisualEditingEnabled.value) return;
+	applyVisualEditingButton();
+	applyVisualEditing();
+});
 </script>
 
 <template>
@@ -117,13 +146,11 @@ useSeoMeta({
     :description="plans.tagline || ''"
     class=""
     :ui="{
-      title: 'font-header text-secondary-600'
+      header: 'font-header text-secondary-600 mb-30 md:mb-15'
     }">
     <UPricingPlans 
-      :title="plans.headline"
-      :tagline="plans.tagline"
       class="lg:p-5 rounded-2xl"
-    >  
+    >
             <UPricingPlan
               v-for="(plan, index) in plans.pricing_cards"
               v-bind="plan"
@@ -166,5 +193,21 @@ useSeoMeta({
             </UPricingPlan>
     </UPricingPlans>  
   </UPageSection>
+  <div
+			v-if="isVisualEditingEnabled && page"
+			class="fixed z-50 w-full bottom-4 left-0 right-0 p-4 flex justify-center items-center gap-2"
+		>
+			<!-- If you're not using the visual editor it's safe to remove this element. Just a helper to let editors add edit / add new blocks to a page. -->
+			<Button
+				id="visual-editing-button"
+				variant="secondary"
+				:data-directus="
+					setAttr({ collection: 'pages', item: page.id, fields: ['blocks', 'meta_m2a_button'], mode: 'modal' })
+				"
+			>
+				<Icon name="lucide:pencil" />
+				Edit All Blocks
+			</Button>
+		</div>
   </main>
 </template>

@@ -1,6 +1,7 @@
 <script setup lang='ts'>
-import { type Product, type ProductVariant } from '~/types';
 import { useCartStore } from '~/stores/cartStore';
+import { type ProductVariant } from '#shared/types/schema';
+
 const props = defineProps<ProductVariant>()
 
 const cartStore = useCartStore();

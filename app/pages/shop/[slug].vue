@@ -1,25 +1,20 @@
 <script setup lang="ts">
-import { type Product } from '~/types';
-import { productFields } from '~/types/fields';
 import { ref, watch } from 'vue'
 import { useToast } from '@nuxt/ui/runtime/composables/useToast.js';
 import { CartSlideover } from '#components'
-import type DirectusImageVue from '~/components/shared/DirectusImage.vue';
 
-const { $directus, $readItems } = useNuxtApp()
 const route = useRoute()
 const { locale } = useI18n()
 const toast = useToast()
 const overlay = useOverlay()
-const modal = overlay.create(CartSlideover)
-
-async function openModal() {
-  modal.open()
-}
+const pageUrl = useRequestURL();
 
 const cartStore = useCartStore();
 const handleAddProductToCart = (product: Product) => {
-    const variant = product.variants.find(v => v.id === selectedVariant.value)
+    const variant = product?.variants?.find(v => v.id === selectedVariant.value) as CartItem
+    const {variants, ...productWithoutVariants} =  product;
+    variant.product = productWithoutVariants;
+    variant.variantId = variant?.id;
     if (variant === undefined){
       return;
     }
@@ -54,54 +49,29 @@ const handleAddProductToCart = (product: Product) => {
     })
 }
 
-const slug = computed(() => {
-  return Array.isArray(route.params.slug)
-    ? route.params.slug[0]
-    : route.params.slug
-});
+const slug = route.params.slug as string;
 
 // SSR + SSG aware — reruns when locale changes or slug changes
-const { data, pending, error } = await useAsyncData(
-  () => `products-${slug.value}-${locale.value}`,   // key must include locale
-  async () => {
-    const products = await $directus.request(
-      $readItems('products', {
-        filter: { slug: { _eq: slug.value } },
-        fields: productFields,
-        limit: 1,
-      })
-    );
-    if (!products.length) {
-      throw createError({ statusCode: 404, statusMessage: "Not found" });
-    }
-    const base = products[0];
 
-    if (locale.value === 'en') {
-      return base; // default content
-    }
+const {
+	data,
+  pending,
+	error,
+	refresh,
+} = await useFetch<{product: Product}>(`/api/products/${slug}`, {
+	key: `products-${slug}`,
+  query: {slug: slug}
+});
 
-    // find translation
-    const t = base.translations.find(
-      x => x.languages_code === locale.value
-    );
+if (!data.value || error.value) {
+	throw createError({ statusCode: 404, statusMessage: 'Post not found', fatal: true });
+}
 
-    // fallback to default text if translation doesn't exist
-    return {
-      ...base,
-      title: t?.title ?? base.title,
-      content: t?.content ?? base.content
-    };
-  },
-  {
-    watch: [() => locale.value, () => slug.value], // react to locale changes
-  }
-);
+const product = computed(() => data.value?.product);
 
-const product = computed(() => data.value);
 
 // 🔍 Watch whenever radio changes
 const selectedVariant = ref(null)
-
 watch(
   () => product.value?.variants,
   (variants) => {
@@ -128,100 +98,86 @@ watch(
 const variantDescription = computed(() => {
   const variants = product.value?.variants || []
   const selected = variants.find(v => v.id === selectedVariant.value)
-  return selected || ''
+  return selected;
 })
 
 const isDisabled = computed(() => !selectedVariant.value)
 
 const images = computed(() => {
+  if (product.value !== undefined) {
 
-  const productImages =
-    product.value.images?.map(v => v.file).filter(Boolean) || []
-  
-  const variantImages =
-    product.value.variants?.map(v => v.image).filter(Boolean) || []
+    const productImages =
+      product.value.images?.map(v => v.file).filter(Boolean) || []
+    
+    const variantImages =
+      product.value.variants?.map(v => v.image).filter(Boolean) || []
 
-  return [...productImages, ...variantImages]
-})
+    return [...productImages, ...variantImages]
+  }
+
+  return [];
+}) 
 
 
+useSeoMeta({
+	title: product.value?.title || product.value?.title || '',
+	description: product.value?.description || '',
+	ogTitle: product.value?.title || product.value?.title || '',
+	ogDescription: product.value?.description || '',
+	ogUrl: pageUrl.toString(),
+});
 
 const counter = ref(1);
 
-const carousel = useTemplateRef('carousel')
-const activeIndex = ref(0)
-
-function onClickPrev() {
-  activeIndex.value--
-}
-function onClickNext() {
-  activeIndex.value++
-}
-function onSelect(index: number) {
-  activeIndex.value = index
-}
-
-function select(index: number) {
-  activeIndex.value = index
-
-  carousel.value?.emblaApi?.scrollTo(index)
-}
 </script>
 
 <template>
-  
+
+  <UPageSection
+      class="lg:my-20"
+      :ui="{
+        title: 'font-header text-secondary',
+        container: 'py-0 sm:py-0 md:py-0 lg:py-0'
+    }
+    ">
   <UPageHero 
     v-if="product"
     :title="product.title"
-    class="justify-center max-w-xs sm:max-w-none"
+    class="justify-center max-w-md sm:max-w-xl md:max-w-xl lg:max-w-none pt-0"
     orientation="horizontal"
     :ui="{
-      title: 'font-headers'
+      title: 'font-header',
+      container: 'flex flex-col lg:grid py-0 sm:py-0 lg:py-0 gap-4 lg:gap-16 font-mono'
     }"
     reverse>
+    
     <template #default>
-      <div>  
-        <UCarousel
-            ref="carousel"
-            v-slot="{ item }"
-            :items="images"
-            :prev="{ onClick: onClickPrev }"
-            :next="{ onClick: onClickNext }"
-            class="w-full w-100 mx-auto"
-            @select="onSelect"
-          >
-          <SharedDirectusImage :uuid="item" class="rounded-lg max-w-full"/>
-        </UCarousel>
-
-    <div class="flex gap-1 justify-center pt-4 max-w-xs mx-auto">
-      <div
-        v-for="(item, index) in images"
-        :key="index"
-        class="size-20 opacity-25 hover:opacity-100 transition-opacity"
-        :class="{ 'opacity-100': activeIndex === index }"
-        @click="select(index)"
-      >
-        <SharedDirectusImage :uuid="item"/>
-      </div>
-    </div>
-      </div>  
+      <ProductImageGallery :data="images" />
     </template>
 
-
+    <template #headline>
+              <UBadge v-if="product.is_custom" color="info" variant="solid" label="This is a custom stamp"></UBadge>
+    </template>
       
     <template #description>
         <div v-html="product.description"></div>
     </template>
     <template #body>
+      
       <UPageCard
         title="Choose an option"
-        class="lg:w-xl m-auto w-full">
+        class=" m-auto w-fit sm:min-w-lg md:min-w-md xl:min-w-xl"
+        :ui="{
+          container: 'w-fit'
+        }">
         <template #header>
             <div v-html="variantDescription.description"></div>
-            <div>RM {{ variantDescription.price}}</div>
+            <div class="text-2xl font-bold font-header">RM {{ variantDescription.price}}</div>
         </template>
         <URadioGroup 
+            v-if="product.variants"
             v-model="selectedVariant"
+            size="xs"
             indicator="end" 
             orientation="horizontal"
             color="secondary"
@@ -238,7 +194,7 @@ function select(index: number) {
               description: 'text-white'
             }">  
         </URadioGroup>
-      <div class="row">
+      <div v-if="!product.is_custom" class="row">
         <UInputNumber 
               v-model="counter" 
               :min=0
@@ -261,7 +217,20 @@ function select(index: number) {
         <UButton label="Add to Cart" color="secondary" variant="solid" @click="handleAddProductToCart(product)" :disabled="isDisabled">
         </UButton>
       </div>
+      <div v-else class="flex justify-left">
+        <UButton label="Personalise my stamp!" size="xl" color="tertiary" variant="solid"   
+          :to="{
+            path: `/shop/${slug}/customise`,
+            query: {
+              variantId: selectedVariant,
+            }
+          }" 
+          class="bg-tertiary dark:bg-tertiary-100 dark:hover:bg-tertiary-300"
+          :disabled="isDisabled">
+        </UButton>
+      </div>
      </UPageCard>
     </template>
   </UPageHero>
+  </UPageSection>
 </template>

@@ -195,7 +195,7 @@ export interface Product {
     id:          number;
     title:       string;
     price:       number;
-	statis:      string;
+	status:      string;
     description: string;
     category:    Category;
 	thumbnail:	 string;

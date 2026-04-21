@@ -43,6 +43,7 @@ const darkLogoUrl = computed(() =>
 
 <template>
 	<footer v-if="globals" ref="footerRef" class="bg-gray dark:bg-[var(--background-variant-color)] py-16">
+		
 		<Container class="text-foreground dark:text-white">
 			<div class="flex flex-col md:flex-row justify-between items-start gap-8 pt-8">
 				<div class="flex-1">
@@ -85,6 +86,7 @@ const darkLogoUrl = computed(() =>
 				</div>
 
 				<div class="flex flex-col items-start flex-1">
+					
 					<nav v-if="props.navigation.items?.length" class="w-full md:w-auto text-left">
 						<ul class="space-y-4">
 							<li v-for="item in props.navigation.items" :key="item.id">

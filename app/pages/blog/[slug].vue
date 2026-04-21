@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import RichText from '~/components/block/RichText.vue';
+
 const { $directus, $readItems } = useNuxtApp()
 const route = useRoute()
 const { locale } = useI18n()
-
+const pageUrl = useRequestURL();
 const slug = computed(() => {
   return Array.isArray(route.params.slug)
     ? route.params.slug[0]
@@ -16,7 +18,7 @@ const { data, pending, error } = await useAsyncData(
     const posts = await $directus.request(
       $readItems('posts', {
         filter: { slug: { _eq: slug.value } },
-        fields: ['id', 'slug', 'title', 'content', 'translations.*'],
+        fields: ['id', 'slug', 'title', 'content', 'translations.*', {'author' : ['first_name']}, 'published_at', 'seo'],
         limit: 1,
       })
     );
@@ -49,11 +51,41 @@ const { data, pending, error } = await useAsyncData(
 );
 
 const post = computed(() => data.value);
+
+
+useSeoMeta({
+	title: post.value?.seo?.title || post.value?.title || '',
+	description: post.value?.seo?.meta_description || '',
+	ogTitle: post.value?.seo?.title || post.value?.title || '',
+	ogDescription: post.value?.seo?.meta_description || '',
+	ogUrl: pageUrl.toString(),
+});
+
 </script>
 
 <template>
-  <div v-if="post">
-    <h1>{{ post.title }}</h1>
-    <p>{{ post.content }}</p>
-  </div>
+  
+  <div  class="relative mx-auto flex flex-col items-center justify-center sm:px-4 py-1 max-w-dvw overflow-hidden">
+    <UPageSection v-if="post" class="w-full lg:max-w-[70%] lg:gap-0"
+      :ui="{
+        container: 'gap-2 lg:gap-2'
+      }">
+        <BaseHeadline :headline="post.title" class="p-0"/>
+        <BaseTagline :tagline="`by ${post.author.first_name}`"/>
+        <BaseText
+          v-if="post.content"
+          :content="post.content"
+          class="
+            bg-white 
+            dark:bg-secondary-900 
+            lg:p-8 p-2 
+            rounded-4xl
+            shadow-lg shadow-secondary-800"
+        />
+    </UPageSection>
+    <div v-else>
+      Post Not Found
+    </div>
+	</div>
+  
 </template>

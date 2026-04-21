@@ -33,12 +33,15 @@ const mm = today.getMonth() + 1;
 const yyyy = today.getFullYear();
 const defaultValue = shallowRef(new CalendarDate(yyyy, mm, dd))
 const minValue = shallowRef(new CalendarDate(yyyy,mm,dd))
+
+const enableDate = ref(false);
 </script>
 
 <template>
-    <div :style="'width: ' + fieldWidth + ';'">
+    <div :style="'width: ' + fieldWidth + ';'" class="flex flex-row rounded-2xl">
+      
         <label for="field">{{ label }}</label>
-        <UInputDate ref="inputDateRef" v-model="defaultValue" :min-value="minValue" variant="outline" locale="en-GB">
+        <UInputDate ref="inputDateRef" :disabled="!enableDate" v-model="defaultValue" :min-value="minValue" variant="subtle" locale="en-GB" class="dark:text-white dark:bg-black data-disabled:bg-red">
         <template #trailing>
         <UPopover :reference="inputDateRef?.inputsRef[3]?.$el">
             <UButton
@@ -48,12 +51,24 @@ const minValue = shallowRef(new CalendarDate(yyyy,mm,dd))
             icon="i-lucide-calendar"
             aria-label="Select a date"
             class="px-0"
+            :disabled="!enableDate"
             />
 
             <template #content>
             <UCalendar v-model="defaultValue" class="p-2" />
             </template>
         </UPopover>
+        </template>
+        <template #leading>
+              <UCheckbox 
+                size="lg" 
+                color="secondary" 
+                class="bg-none ring-secondary" 
+                v-model="enableDate" 
+                :ui="{
+                    
+                    base: 'ring-secondary'
+                }"/>
         </template>
   </UInputDate>
     </div>

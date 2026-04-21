@@ -231,20 +231,17 @@ export interface Customer{
 	first_name?:   string;
 	last_name?:    string;
 	email:         string;
-	orders:        Order[];
-	addresses:     CustomerAddress[];
+	phone?: string;
+	orders?:        Order[] | string[];
+	addresses?:     CustomerAddress[] | string[];
 
-}
-
-export interface CartItem extends ProductVariant {
-	quantity: number;
 }
 
 export interface CustomerAddress {
 	/** @primaryKey */
 	id: string;
 	sort?: number | null;
-	customer:  Customer;
+	customer:  Customer | string;
 	is_active?: boolean
 	is_shipping?: boolean;
 	is_billing?: boolean;
@@ -252,8 +249,9 @@ export interface CustomerAddress {
 	address_line_2?: string | null;
 	city?: string | null;
 	state?: string | null;
-	postal_code?: string | null;
-	country?: string | null;
+	postcode?: string | null;
+	country?: Object | string | null;
+	street_number?: string | null;
 }
 
 export interface FormField {
@@ -262,7 +260,7 @@ export interface FormField {
 	/** @description Unique field identifier, not shown to users (lowercase, hyphenated) */
 	name?: string | null;
 	/** @description Input type for the field */
-	type?: 'text' | 'textarea' | 'checkbox' | 'checkbox_group' | 'radio' | 'file' | 'select' | 'hidden' | null;
+	type?: 'text' | 'textarea' | 'checkbox' | 'checkbox_group' | 'radio' | 'file' | 'select' | 'hidden' | 'font' | 'address' | 'phone' | 'datetime' | null;
 	/** @description Text label shown to form users. */
 	label?: string | null;
 	/** @description Default text shown in empty input. */
@@ -337,6 +335,33 @@ export interface FormSubmissionValue {
 	file?: DirectusFile | string | null;
 	/** @description Form submission date and time. */
 	timestamp?: string | null;
+}
+
+export interface ShopSettings {
+	/** @primaryKey */
+	id: string;
+	seo?: ExtensionSeoMetadata | null;
+	enabled: boolean | null;
+	shop_closed_message?: string | null;
+	shipping_countries: {
+		countryCodes: string[];
+	},
+	shipping_fees?: [
+		{
+			countries: {
+				countryCodes: string[];
+			},
+			thresholds: [{
+				fee: number
+				quantity: number
+			}]
+		}
+	],
+	reminder_form?: Form | string | null;
+	payment_success_heading?: string | null;
+	payment_success_message?: string | null;
+	payment_failed_heading?: string | null;
+	payment_failed_message?: string | null;
 }
 
 export interface Globals {
@@ -452,6 +477,21 @@ export interface Page {
 	blocks?: PageBlock[] | string[];
 }
 
+export interface Payment {
+	/** @primaryKey */
+	id: string;
+	date_created?: string | null;
+	user_created?: DirectusUser | string | null;
+	status: 'success' | 'failed';
+	payment_gateway: 'stripe';
+	payment_method: string | null;
+	amount: number;
+	currency: string;
+	order: Order | string | null;
+	payment_id: string;
+	error_code?: string | null;
+}
+
 export interface Post {
 	/** @description Rich text content of your blog post. */
 	content?: string | null;
@@ -493,7 +533,8 @@ export interface Product {
 	description?: string | null
 	thumbnail?:  DirectusFile | string | null;
 	images?:  DirectusFile [] | string[];
-	product_variants?: ProductVariant[];
+	variants?: ProductVariant[];
+	addons?: Product[];
 
 }
 
@@ -549,9 +590,27 @@ export interface ProductVariant {
 	product_fields?: ProductVariantProductField[];
 }
 
+
+export interface CartItem extends ProductVariant {
+    isCustom?: boolean;
+	variantId: string;
+    quantity : number;
+    addons?: CartItem[];
+    customisationFields?: {
+		id: string,
+		fields: [{
+			id: string,
+			name: string,
+			type: string,
+			value?: Object | File | string | number | null
+    	}]
+	}
+}
+
+
 export interface ProductVariantProductField {
 	/** @primaryKey */
-	id: string;
+	id: number;
 	product_variants_id?: ProductVariant[];
 	product_fields_id?: ProductField[];
 }
@@ -566,12 +625,12 @@ export interface Order {
 	cancelled_at?: string | null;
 	completed_at?: string | null;
 	order_number?: string | null;
-	status?:       string | null;
+	status?:       'pending' | 'completed' | 'archived' | 'canceled' | null;
 	fulfilment_satus?:     string | null;
 	payment_status?:       string | null;
-	customer?:     Customer;
-	billing_address?: CustomerAddress | null;
-	shipping_address?: CustomerAddress | null;
+	customer?:     Customer | string | null;
+	billing_address?: CustomerAddress | string | null;
+	shipping_address?: CustomerAddress | string | null;
 	same_as_shipping?: boolean;
 	line_items:    OrderItem[];
 	subtotal:      number;
@@ -585,18 +644,21 @@ export interface OrderItem {
 	id: string;
 	order: Order;
 	sort?: number | null;
-	product: Product;
-	product_variant: ProductVariant;
+	product: Product | string | null;
+	product_variant: ProductVariant | string | null;
 	quantity?: number;
 	price: number;
 	subtotal: number;
 	total: number;
+	submission_values?: OrderItemSubmission[]
+	addons?: OrderItem[]
+	addon_of?: OrderItem | string | null;
 }
 
 export interface OrderItemSubmission {
 	/** @primaryKey */
 	id: string;
-	orderItem: OrderItem;
+	order_item: OrderItem;
 	sort?: number | null;
 	field?: ProductField | string | null;
 	/** @description The data entered by the user for this specific field in the form submission. */
@@ -1079,12 +1141,14 @@ export interface Schema {
 	forms: Form[];
 	form_submissions: FormSubmission[];
 	form_submission_values: FormSubmissionValue[];
+	shop_settings: ShopSettings;
 	globals: Globals;
 	navigation: Navigation[];
 	navigation_items: NavigationItem[];
 	page_blocks: PageBlock[];
 
 	pages: Page[];
+	payments: Payment[];
 	posts: Post[];
 	products: Product[];
 	product_fields: ProductField[];
@@ -1142,11 +1206,13 @@ export enum CollectionNames {
 	forms = 'forms',
 	form_submissions = 'form_submissions',
 	form_submission_values = 'form_submission_values',
+	shop_settings = 'shop_settings',
 	globals = 'globals',
 	navigation = 'navigation',
 	navigation_items = 'navigation_items',
 	page_blocks = 'page_blocks',
 	pages = 'pages',
+	payments = 'payments',
 	posts = 'posts',
 	products = 'products',
 	product_fields = 'product_fields',

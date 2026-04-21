@@ -1,8 +1,8 @@
 <template>
     <div class="card">
-        <Menubar :model="items" breakpoint="768px" class="bg-secondary font-header hidden">
+        <Menubar :model="navItems || items" breakpoint="768px" class="bg-secondary font-header hidden">
             <template #start>
-                <ULink as="h1" active-class="onhome" class="text-white text-xl lg:text-3xl hover:text-primary" to="/">Stampy Stuff</ULink>
+                <ULink as="h1" active-class="onhome" class="text-white text-xl lg:text-3xl hover:text-primary" to="/">{{site.title || 'Stampy Stuff'}}</ULink>
             </template>
             <template #item="{ item, props, }" class="bg-secondary">
                     <ULink 
@@ -27,11 +27,20 @@
             </template>
             <template #end>
                 <div class="flex items-center gap-2">
-                      <UColorModeSwitch />
+
                        <CartSlideover></CartSlideover>
                 </div>
             </template>
         </Menubar>
+        <UBreadcrumb 
+              v-if="breadcrumbs.length > 1" 
+              separator-icon="i-lucide-chevron-right"
+              :items="breadcrumbs" 
+              class=" mb-2 text-5xl"
+              
+              :ui="{
+                linkLabel: 'text-xl text-secondary dark:text-secondary-200',
+              }"/>
     </div>
 </template>
 
@@ -39,9 +48,6 @@
 import { ref, onMounted } from 'vue';
 // eslint-disable-next-line import/extensions
 import Menubar from 'primevue/menubar';
-import IconShop from '../Icons/IconShop.vue';
-import IconAbout from '../Icons/IconAbout.vue';
-import IconContact from '../Icons/IconContact.vue';
 import SvgIcon from '../Icons/SvgIcon.vue';
 import { useCartStore } from '~/stores/cartStore';
 
@@ -49,6 +55,12 @@ const { t } = useI18n();
 const localePath = useLocalePath();
 const cartStore = useCartStore();
 useRouter();
+
+// Props already defined
+const props = defineProps<{
+  navigation: { items: NavigationItem[] };
+  site: { logo?: string; logo_dark_mode?: string, title?: string };
+}>();
 
 const route = useRoute();
 
@@ -59,6 +71,13 @@ const emit = defineEmits<{
 onMounted(() => {
   emit('loaded'); // notify parent that menu is ready
 });
+
+const navItems = computed(() => props.navigation.items.map((item) => ({
+  label: item.title,
+  route: item.type == 'url' ? item.url : item?.page?.permalink || '',
+  icon: item.title.toLowerCase(),
+  badge: 3
+})))
 
 const items = computed(() => [
   {
@@ -87,6 +106,16 @@ const isLinkActive = (itemRoute: string) => {
   // Check if the current path starts with the item's path
   return route.path.startsWith(itemRoute);
 };
+
+
+const breadcrumbs = computed(() => {
+  const segments = route.path.split('/').filter(Boolean)
+
+  return segments.map((segment, index) => ({
+    label: segment,
+    to: '/' + segments.slice(0, index + 1).join('/')
+  }))
+});
 </script>
 
 <style>

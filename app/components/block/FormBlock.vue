@@ -23,7 +23,7 @@ defineProps<{ data: CustomFormData }>();
 
 <template>
 	<section v-if="data.form" class="mx-auto">
-		<Tagline
+		<BaseTagline
 			v-if="data.tagline"
 			:tagline="data.tagline"
 			:data-directus="
@@ -36,7 +36,7 @@ defineProps<{ data: CustomFormData }>();
 			"
 		/>
 
-		<Headline
+		<BaseHeadline
 			v-if="data.headline"
 			:headline="data.headline"
 			:data-directus="

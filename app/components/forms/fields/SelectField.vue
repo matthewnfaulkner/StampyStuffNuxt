@@ -16,17 +16,17 @@ const localValue = computed({
 });
 </script>
 
-<template>
-	<Select v-model="localValue">
-		<SelectTrigger :id="props.name">
-			<SelectValue :placeholder="props.placeholder || 'Select an option'" />
-		</SelectTrigger>
-		<SelectContent>
-			<SelectGroup>
-				<SelectItem v-for="option in props.options ?? []" :key="option.value" :value="option.value">
+<template>	
+	<UiSelect v-model="localValue">
+		<UiSelectTrigger :id="props.name" class="bg-white dark:bg-black">
+			<UiSelectValue :placeholder="props.placeholder || 'Select an option'" />
+		</UiSelectTrigger>
+		<UiSelectContent class="bg-white dark:bg-black">
+			<UiSelectGroup>
+				<UiSelectItem v-for="option in props.options ?? []" :key="option.value" :value="option.value">
 					{{ option.text }}
-				</SelectItem>
-			</SelectGroup>
-		</SelectContent>
-	</Select>
+				</UiSelectItem>
+			</UiSelectGroup>
+		</UiSelectContent>
+	</UiSelect>
 </template>

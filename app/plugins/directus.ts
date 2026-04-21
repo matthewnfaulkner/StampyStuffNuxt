@@ -7,10 +7,10 @@
     createItems,
     createItem,
 } from "@directus/sdk";
-import type { DirectusSchema } from '../../directus';
+import type { Schema }  from '#shared/types/schema'  ;
 
-const directus = createDirectus<DirectusSchema>(
-    "http://localhost:8055/",
+const directus = createDirectus<Schema>(
+    "http://localhost:8056/",
 ).with(rest());
 
 export default defineNuxtPlugin(() => {

@@ -37,13 +37,14 @@ const cartHasProducts = computed(() => (cartStore?.cart?.length ?? 0) > 0)
       <div v-else class="flex flex-col justify-between h-full">
         <div class="overflow-y-scroll">
           <div v-for="cartProduct in cartStore.cart ?? []" :key="cartProduct.id">
-                {{ cartProduct.size }}
                 <ProductCard
                     :id="cartProduct.id"
                     :price="cartProduct.price"
                     :product="cartProduct.product"
                     :size="cartProduct.size"
                     :image="cartProduct.image"
+                    :addons="cartProduct.addons"
+                    :is-custom="cartProduct.isCustom"
                 />
                 </div>
                     <CartProductPaymentDetails @close="close"/>

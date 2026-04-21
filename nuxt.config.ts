@@ -21,6 +21,22 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
   ],
+  app: {
+    head: {
+      script: [
+        {
+          src: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCLae8FBCNECkSJTkKU29uhtwAHxiKk0j0&libraries=places',
+          async: true,
+          defer: true
+        }
+      ]
+    }
+  },
+  scripts: {
+    registry: {
+      stripe: true,
+    }
+  },
   primevue: {
         options: {
             theme: {
@@ -56,9 +72,12 @@ export default defineNuxtConfig({
             siteUrl: process.env.NUXT_PUBLIC_SITE_URL as string,
             directusUrl: process.env.DIRECTUS_URL as string,
             enableVisualEditing: process.env.NUXT_PUBLIC_ENABLE_VISUAL_EDITING !== 'false',
+            stripePublicKey: process.env.STRIPE_PUBLISHABLE_KEY
     },
+    stripeSeceretKey: process.env.STRIPE_SECRET_KEY,
     directusServerToken: process.env.DIRECTUS_SERVER_TOKEN,
-    directusFormToken: process.env.DIRECTUS_FORM_TOKEN
+    directusFormToken: process.env.DIRECTUS_FORM_TOKEN,
+    directusPaymentToken: process.env.DIRECTUS_PAYMENT_TOKEN
   },
   vue: {
           propsDestructure: true,

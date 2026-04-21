@@ -14,9 +14,14 @@ const validBlocks = computed(() =>
 </script>
 
 <template>
-	<div v-for="block in validBlocks" :key="block.id" :data-background="block.background" class="py-16">
-		<Container>
-			<BaseBlock :block="block" />
-		</Container>
+	<div v-for="block in validBlocks" class="px-10">
+		<div  :key="block.id" :data-background="block.background" class="py-16 w-fit m-auto lg:px-10">
+			<Container >
+				<BaseBlock :block="block" class="lg:w-full w-[90%] m-auto" />
+				
+			</Container>
+		</div>
+		<USeparator class="w-lvw" size="xs" color="secondary" :avatar="{ src: `/logo.svg`, size: '3xl', class: 'bg-transparent' }" />
+
 	</div>
 </template>

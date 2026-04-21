@@ -5,12 +5,14 @@ import { buildZodSchema } from '@/lib/zodSchemaBuilder';
 import type { FormField } from '#shared/types/schema';
 import BaseFormField from './BaseFormField.vue';
 import BaseButton from '../base/BaseButton.vue'
+import { empty } from '#build/ui';
 
 const props = defineProps<{
 	fields: FormField[];
 	onSubmit: (data: Record<string, any>) => Promise<void> | void;
 	submitLabel: string;
 	formId?: string;
+	initialValues?: Record<string, any>
 }>();
 
 const isSubmitting = ref(false);
@@ -33,6 +35,8 @@ const schema = computed(() => {
 	}
 });
 
+const defaultValues = props.initialValues ? props.initialValues : {};
+
 const initialValues = computed(() => {
 	if (!validFields.value.length) return {};
 	return validFields.value.reduce(
@@ -41,23 +45,52 @@ const initialValues = computed(() => {
 
 			switch (field.type) {
 				case 'checkbox':
-					defaults[name] = false;
+					defaults[name] = defaultValues[name] || false;
 					break;
 				case 'checkbox_group':
-					defaults[name] = [];
+					defaults[name] =  defaultValues[name] || [];
 					break;
 				case 'select':
 				case 'radio':
-					defaults[name] = '';
+					defaults[name] =  defaultValues[name] || '';
 					break;
 				case 'file':
-					defaults[name] = null;
+					if(defaultValues[name] instanceof Array && defaultValues[name].length > 0) {
+						let notFileFlag = false
+						defaultValues[name].forEach((value) => {
+							if (!(value instanceof File)) {
+								defaults[name] = null;
+								notFileFlag = true;
+							};
+						})
+						if (!notFileFlag) {
+							defaults[name] = defaultValues[name];
+						}
+					}
+					else{
+						defaults[name] = defaultValues[name] instanceof File ? defaultValues[name] : null;
+					}
 					break;
+				
+				case 'address': {
+					const addr = defaultValues[name] ?? {};
+					defaults[name] = {
+						street_number: addr['street-number'] || addr['street_number'] || '',
+						address_line_1: addr['address-line-1'] || addr['address_line_1'] || '',
+						address_line_2: addr['address-line-2'] || addr['address_line_2'] || '',
+						city: addr['city'] || '',
+						country: addr['country'] || '',
+						state: addr['state'] || '',
+						postcode: addr['postcode'] || '',
+					};
+					break;
+				}
+				case 'phone':
 				case 'textarea':
 				case 'text':
 				case 'datetime':
-				default:
-					defaults[name] = '';
+				default:	
+					defaults[name] =  defaultValues[name] || '';
 			}
 
 			return defaults;
@@ -66,10 +99,24 @@ const initialValues = computed(() => {
 	);
 });
 
-const { handleSubmit, values } = useForm({
+const { handleSubmit, values, setValues: veeSetValues } = useForm({
 	validationSchema: schema,
 	initialValues: initialValues.value,
 });
+
+defineExpose({
+  values,
+  setValues: veeSetValues,
+});
+
+const emit = defineEmits<{ 'address-country-change': [country: string] }>();
+
+const addressFieldName = computed(() => validFields.value.find(f => f.type === 'address')?.name);
+
+watch(
+	() => addressFieldName.value ? (values[addressFieldName.value] as any)?.country : undefined,
+	(country) => { if (country) emit('address-country-change', country) }
+);
 
 const onSubmitForm = handleSubmit(async (formValues) => {
 	if (isSubmitting.value) return;
@@ -80,7 +127,7 @@ const onSubmitForm = handleSubmit(async (formValues) => {
 		isSubmitting.value = false;
 	}
 });
-</script>
+</script>	
 
 <template>
 	<form
@@ -99,15 +146,18 @@ const onSubmitForm = handleSubmit(async (formValues) => {
 	>
 		<div class="flex flex-wrap gap-4">
 			<BaseFormField v-for="field in validFields" :key="field.id" :field="field" :model-value="values[field.name]" />
-			<div class="w-full">
+			<slot name="stripe"/>
+			<div class="w-full flex justify-center">
 				<div>
 					<BaseButton
 						:id="`submit-${submitLabel.replace(/\s+/g, '-').toLowerCase()}`"
 						type="submit"
 						:label="submitLabel"
+						variant="solid"
 						:disabled="isSubmitting"
 						icon="arrow"
 						icon-position="right"
+						class="bg-info text-white"
 					/>
 				</div>
 			</div>

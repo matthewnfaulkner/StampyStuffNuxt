@@ -13,9 +13,8 @@ import type { Page, PageBlock, BlockPost, Post } from '#shared/types/schema';
 const pageFields = [
 	'title',
 	'id',
+	'seo',
 	{
-		// SEO fields for search engine optimization
-		seo: ['title', 'meta_description', 'og_image'],
 		// Content blocks
 		blocks: [
 			'id',

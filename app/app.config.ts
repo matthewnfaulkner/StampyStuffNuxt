@@ -1,9 +1,19 @@
 export default defineAppConfig({
   ui: {
+    badge: {
+      compoundVariants: [
+        {
+          color: 'info',
+          variant: 'solid',
+          class: 'dark:bg-info-300'
+        },
+      ],
+    },
     colors: {
       primary: 'blue',
       secondary: 'purple',
-      tertiary: 'secondary'
+      tertiary: 'indigo',
+      info: 'indigo'
     },
     navigationMenu: {
       variants: {
@@ -17,7 +27,7 @@ export default defineAppConfig({
     pageHero: {
       slots: {
         root: 'relative isolate',
-        container: 'flex flex-col lg:grid py-24 sm:py-32 lg:py-40 gap-16 sm:gap-y-24 font-mono ',
+        container: 'flex flex-col lg:grid py-10 sm:py-10 lg:py-10 gap-16 font-mono ',
         wrapper: '',
         header: '',
         headline: 'mb-4',
@@ -90,7 +100,7 @@ export default defineAppConfig({
       }
     },
     pricingPlans: {
-      base: 'flex flex-col lg:gap-y-10 gap-y-20',
+      base: 'flex flex-row lg:gap-y-10 gap-y-20',
       variants: {
         orientation: {
           horizontal: 'grid lg:grid-cols-[repeat(var(--count),minmax(0,1fr))] grid-cols-2',
@@ -118,5 +128,6 @@ export default defineAppConfig({
         label: 'text-start break-words'
       },
     },
+
   }
 })

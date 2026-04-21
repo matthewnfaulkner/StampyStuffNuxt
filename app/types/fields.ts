@@ -160,12 +160,13 @@ export const productVariantFields = [
             'id',
             'slug',
             'title',
-            'description'
+            'description',
+			'thumbnail'
         ]
     },
 	{
 		product_fields: [
-			'id',
+
 			{
 				product_fields_id: [
 					'id',

@@ -27,7 +27,6 @@ const {
 	},
 });
 
-console.log(page.value);
 if (!page.value || error.value) {
 	throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true });
 }
@@ -72,7 +71,8 @@ onMounted(() => {
 </script>
 
 <template>
-	<div class="relative">
+	<div class="relative mx-auto flex flex-col items-center justify-center px-4 py-1 max-w-dvw overflow-hidden">
+		
 		<PageBuilder v-if="pageBlocks" :sections="pageBlocks" />
 		<div
 			v-if="isVisualEditingEnabled && page"

@@ -58,8 +58,8 @@ const { setAttr } = useVisualEditing();
 </script>
 
 <template>
-	<div>
-		<Tagline
+	<div class="w-dvw lg:w-[800px] lg:max-w-[100%] px-10">
+		<BaseTagline
 			v-if="data.tagline"
 			:tagline="data.tagline"
 			:data-directus="
@@ -71,14 +71,14 @@ const { setAttr } = useVisualEditing();
 				})
 			"
 		/>
-		<Headline
+		<BaseHeadline
 			v-if="data.headline"
 			:headline="data.headline"
 			:data-directus="setAttr({ collection: 'block_posts', item: data.id, fields: 'headline', mode: 'popover' })"
 		/>
 
 		<div
-			class="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+			class=""
 			:data-directus="
 				setAttr({
 					collection: 'block_posts',
@@ -87,16 +87,46 @@ const { setAttr } = useVisualEditing();
 					mode: 'popover',
 				})
 			"
-		>
+		>	
 			<template v-if="posts?.length">
-				<NuxtLink
+				<UPageCard
+				v-for="post in posts"
+					:key="post.id"
+					:title="post.title"
+					:description="post.description || ''"
+					icon="i-simple-icons-tailwindcss"
+					:to="`/blog/${post.slug}`"
+					orientation="horizontal"
+					reverse
+					:class="[
+        ' transition-all duration-300 rounded-2xl hover:scale-[1.03] hover:-translate-y-1 hover:shadow-2xl dark:hover:shadow-secondary-100',
+        ]"
+      class="h-full mt-10 rounded-none  bg-primary ring ring-secondary p-0 dark:bg-secondary-950 hover:bg-primary dark:hover:bg-secondary-950"
+  					>
+				<SharedDirectusImage
+							v-if="post.image"
+							:uuid="typeof post.image === 'string' ? post.image : post.image?.id"
+							:alt="post.title"
+							class="w-auto h-[256px] object-cover rounded-lg transition-transform duration-300 group-hover:scale-110"
+							sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+						/>
+				<template #footer >
+					by {{ post.author.first_name }}
+					
+				</template>
+  				</UPageCard>
+				<!--<NuxtLink
 					v-for="post in posts"
 					:key="post.id"
 					:to="`/blog/${post.slug}`"
-					class="group block overflow-hidden rounded-lg"
+					:class="[
+        'transition-all duration-300 rounded-2xl hover:scale-[1.03] hover:-translate-y-1 hover:shadow-2xl dark:hover:shadow-secondary-100',
+        ]"
+      class="h-full rounded-none border-0 bg-primary ring ring-secondary p-4 dark:bg-secondary-950 hover:bg-primary dark:hover:bg-secondary-950"
 				>
+				
 					<div class="relative w-full h-[256px] overflow-hidden rounded-lg">
-						<DirectusImage
+						<SharedDirectusImage
 							v-if="post.image"
 							:uuid="typeof post.image === 'string' ? post.image : post.image?.id"
 							:alt="post.title"
@@ -111,8 +141,11 @@ const { setAttr } = useVisualEditing();
 						<p v-if="post.description" class="text-sm text-foreground mt-2">
 							{{ post.description }}
 						</p>
+						<p v-if="post.description" class="text-muted text-foreground mt-2">
+							by {{ post?.author?.first_name }}
+						</p>
 					</div>
-				</NuxtLink>
+				</NuxtLink>-->
 			</template>
 			<p v-else class="text-center text-gray-500">No posts available.</p>
 		</div>

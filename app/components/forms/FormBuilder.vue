@@ -64,6 +64,7 @@ const handleSubmit = async (data: Record<string, any>) => {
 
 <template>
 	<div v-if="form.is_active" :class="['space-y-6 border border-input p-8 rounded-lg', className]">
+		<slot name="title"/>
 		<div v-if="error" class="p-4 text-red-500 bg-red-100 rounded-md">
 			<strong>Error:</strong>
 			{{ error }}
