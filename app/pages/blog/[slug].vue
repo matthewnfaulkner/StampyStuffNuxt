@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import RichText from '~/components/block/RichText.vue';
+const { isVisualEditingEnabled, apply, setAttr } = useVisualEditing();
+
 
 const { $directus, $readItems } = useNuxtApp()
 const route = useRoute()
@@ -12,7 +14,7 @@ const slug = computed(() => {
 });
 
 // SSR + SSG aware — reruns when locale changes or slug changes
-const { data, pending, error } = await useAsyncData(
+const { data, pending, error, refresh } = await useAsyncData(
   () => `post-${slug.value}-${locale.value}`,   // key must include locale
   async () => {
     const posts = await $directus.request(
@@ -61,6 +63,34 @@ useSeoMeta({
 	ogUrl: pageUrl.toString(),
 });
 
+// Helper functions for Visual Editing
+function applyVisualEditing() {
+	apply({
+		onSaved: async () => {
+			await refresh();
+		},
+	});
+}
+
+function applyVisualEditingButton() {
+	apply({
+		elements: document.querySelector('#visual-editing-button') as HTMLElement,
+		customClass: 'visual-editing-button-class',
+		onSaved: async () => {
+			await refresh();
+			// This makes sure the visual editor elements are updated after the page is refreshed. In case you've added new blocks to the page.
+			await nextTick();
+			applyVisualEditing();
+		},
+	});
+}
+
+onMounted(() => {
+	if (!isVisualEditingEnabled.value) return;
+	applyVisualEditingButton();
+	applyVisualEditing();
+});
+
 </script>
 
 <template>
@@ -70,11 +100,19 @@ useSeoMeta({
       :ui="{
         container: 'gap-2 lg:gap-2'
       }">
-        <BaseHeadline :headline="post.title" class="p-0"/>
+        <BaseHeadline 
+          :headline="post.title" 
+          class="p-0"
+          :data-directus="
+					  setAttr({ collection: 'posts', item: post.id, fields: ['title'], mode: 'modal' })
+				  "/>
         <BaseTagline :tagline="`by ${post.author.first_name}`"/>
         <BaseText
           v-if="post.content"
           :content="post.content"
+          :data-directus="
+					  setAttr({ collection: 'posts', item: post.id, fields: ['content'], mode: 'modal' })
+				  "
           class="
             bg-white 
             dark:bg-secondary-900 

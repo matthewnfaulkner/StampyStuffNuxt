@@ -89,6 +89,9 @@ const { setAttr } = useVisualEditing();
                 button: 'hover:bg-secondary-700 dark:bg-primary dark:hover:bg-sky-200',
                 features: 'w-full'
               }"
+			  :data-directus="
+						setAttr({ collection: 'block_pricing_cards', item: plan.id, fields: ['*'], mode: 'modal' })
+					"
               >
               <template #header>
                 <div class="flex flex-col items-center gap-2 p-4 rounded-t-xl">
@@ -98,6 +101,9 @@ const { setAttr } = useVisualEditing();
                     :alt="plan.title || plan.title || 'Pricing Card Image'"
                     :fill="true"
                     class="w-40 mx-auto object-cover absolute -top-25 md:-top-30 lg:-top-25"
+					:data-directus="
+						setAttr({ collection: 'block_pricing_cards', item: plan.id, fields: ['image'], mode: 'modal' })
+					"
                   />
                   </div>
               </template>
@@ -106,6 +112,9 @@ const { setAttr } = useVisualEditing();
                     v-if="plan.button" 
                     :href="plan.button.url" 
                     :label="plan.button.label"
+					:data-directus="
+						setAttr({ collection: 'block_pricing_cards', item: plan.id, fields: ['button'], mode: 'modal' })
+					"
                     color="secondary"/>
               </template>
               

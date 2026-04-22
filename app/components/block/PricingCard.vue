@@ -41,7 +41,11 @@ const { setAttr } = useVisualEditing();
 		title: 'text-center',
 		body: 'items-center',
 		button: 'hover:bg-secondary-700 dark:bg-primary dark:hover:bg-sky-200'
-		}"
+		}
+		"
+		:data-directus="
+			setAttr({ collection: 'block_pricing_cards', item: card.id, mode: 'modal' })
+		"
 		>
 		<template #header>
 		<div class="flex flex-col items-center gap-2 p-4 rounded-t-xl">
