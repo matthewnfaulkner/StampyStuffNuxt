@@ -30,7 +30,7 @@ defineProps<HeroProps>();
 	<section
 		class="relative w-full mx-auto flex flex-col gap-6 md:gap-12"
 		:class="{
-			'items-center text-center text-white': data.layout === 'image_center',
+			'items-center text-center': data.layout === 'image_center',
 			'md:flex-row-reverse items-center': data.layout === 'image_left',
 			'md:flex-row items-center': data.layout !== 'image_center' && data.layout !== 'image_left',
 		}"

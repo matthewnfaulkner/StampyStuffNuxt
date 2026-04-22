@@ -44,7 +44,6 @@ export default defineEventHandler(async (event) => {
                         },
                         {
                             product_fields: [
-
                                 {
                                     product_fields_id: [
                                         'id',

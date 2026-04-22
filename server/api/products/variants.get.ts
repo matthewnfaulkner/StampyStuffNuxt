@@ -58,7 +58,7 @@ export default defineEventHandler(async (event) => {
         const countPromise = directusServer.request(
 			readItems('product_variants', {
 				aggregate: { count: '*' },
-				filter: { product: { _eq: 'published' } },
+				filter: { product: { status: {_eq: 'published' } } },
 			}),
 		);
 

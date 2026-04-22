@@ -534,9 +534,20 @@ export interface Product {
 	thumbnail?:  DirectusFile | string | null;
 	images?:  DirectusFile [] | string[];
 	variants?: ProductVariant[];
-	addons?: Product[];
-
+	addons?: ProductProducts[] | string[] | null;
+	status: string | null;
+	is_addon: boolean;
+	is_custom: boolean;
+	product_fields?: ProductProductField[] | string[] | null;
 }
+
+export interface ProductProductField {
+	id: number;
+	products_id: Product | string | null;
+	product_fields_id: ProductField | string | null;
+	sort: string;
+}
+
 
 export interface ProductField {
 	/** @primaryKey */
@@ -558,7 +569,7 @@ export interface ProductField {
 	/** @description Options for radio or select inputs */
 	choices?: Array<{ text: string; value: string }> | null;
 	/** @description Parent form this field belongs to. */
-	product_variants?: ProductVariantProductField[];
+	products: ProductProductField[] | string[] | null;
 	sort?: number | null;
 	/** @description Make this field mandatory to complete. */
 	required?: boolean | null;
@@ -566,6 +577,16 @@ export interface ProductField {
 	user_created?: DirectusUser | string | null;
 	date_updated?: string | null;
 	user_updated?: DirectusUser | string | null;
+	max_file_size?: number | null;
+	max_number_files?: number | null;
+	allowed_file_types?: string;
+	addons?: ProductProducts[] | string | null;
+}
+
+export interface ProductProducts {
+	id : number;
+	products_id: Product | string | null;
+	related_products_id: Product | string | null;
 }
 
 export interface ProductImage {
@@ -587,7 +608,7 @@ export interface ProductVariant {
 	price?: number;
 	image?:  DirectusFile | null;
 	description?: string | null;
-	product_fields?: ProductVariantProductField[];
+	featured: boolean;
 }
 
 
@@ -607,13 +628,6 @@ export interface CartItem extends ProductVariant {
 	}
 }
 
-
-export interface ProductVariantProductField {
-	/** @primaryKey */
-	id: number;
-	product_variants_id?: ProductVariant[];
-	product_fields_id?: ProductField[];
-}
 
 export interface Order {
 	/** @primaryKey */
