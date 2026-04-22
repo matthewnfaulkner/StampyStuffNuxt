@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { p } from '#build/ui/prose';
+
 
 interface PostsProps {
 	data: {
@@ -103,16 +105,19 @@ const { setAttr } = useVisualEditing();
         ]"
       class="h-full mt-10 rounded-none  m-auto  bg-primary ring ring-secondary p-0 dark:bg-secondary-950 hover:bg-primary dark:hover:bg-secondary-950"
   					>
+					
 				<SharedDirectusImage
 							v-if="post.image"
 							:uuid="typeof post.image === 'string' ? post.image : post.image?.id"
 							:alt="post.title"
 							class="w-auto h-[256px] object-cover rounded-lg transition-transform duration-300 group-hover:scale-110"
 							sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-						/>
-				<template #footer >
-					by {{ post.author.first_name }}
-					
+						/> 
+				<template #footer>
+					<span>by {{ post.author.first_name }}</span>
+					<p v-if="post.published_at" class="text-muted text-xs">
+						{{ new Date(post.published_at).toLocaleDateString('en-UK', { year: 'numeric', month: 'long', day: 'numeric' }) }}
+					</p>
 				</template>
   				</UPageCard>
 				<!--<NuxtLink

@@ -39,7 +39,32 @@ const { setAttr } = useVisualEditing();
 
 <template>
 	<section>
-		
+	<Tagline
+			v-if="data.tagline"
+			:tagline="data.tagline"
+			class="text-center"
+			:data-directus="
+				setAttr({
+					collection: 'block_pricing',
+					item: id,
+					fields: 'tagline',
+					mode: 'popover',
+				})
+			"
+		/>
+	<Headline
+		v-if="data.headline"
+		:headline="data.headline"
+		class="mb-35 lg:mb-25 text-center"
+		:data-directus="
+			setAttr({
+				collection: 'block_pricing',
+				item: id,
+				fields: 'headline',
+				mode: 'popover',
+			})
+		"
+	/>
 		<UPricingPlans 
       class="lg:p-5 rounded-2xl mb-5"
     >
@@ -86,30 +111,7 @@ const { setAttr } = useVisualEditing();
               
             </UPricingPlan>
     </UPricingPlans> 
-	<Tagline
-			v-if="data.tagline"
-			:tagline="data.tagline"
-			:data-directus="
-				setAttr({
-					collection: 'block_pricing',
-					item: id,
-					fields: 'tagline',
-					mode: 'popover',
-				})
-			"
-		/>
-		<Headline
-			v-if="data.headline"
-			:headline="data.headline"
-			:data-directus="
-				setAttr({
-					collection: 'block_pricing',
-					item: id,
-					fields: 'headline',
-					mode: 'popover',
-				})
-			"
-		/>
+
 	</section>
 
 	 

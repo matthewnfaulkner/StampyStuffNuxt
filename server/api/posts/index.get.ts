@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
 				limit,
 				page,
 				sort: ['-published_at'],
-				fields: ['id', 'title', 'description', 'slug', 'image' , {author : ['first_name']}],
+				fields: ['id', 'title', 'description', 'slug', 'image', 'published_at' , {author : ['first_name']}],
 				filter: { status: { _eq: 'published' } },
 			}),
 		);
