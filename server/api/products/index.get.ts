@@ -127,6 +127,6 @@ export default defineEventHandler(async (event) => {
             count: Number(count[0]?.count) || 0,
         };
     } catch (error){
-        throw createError({ statusCode: 500, message: JSON.parse(error) as string });
+        throw createError(error);
     }
 });
