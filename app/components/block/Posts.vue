@@ -58,7 +58,7 @@ const { setAttr } = useVisualEditing();
 </script>
 
 <template>
-	<div class="w-dvw lg:w-[800px] lg:max-w-[100%] px-10">
+	<div class="w-full lg:w-[800px] lg:max-w-[100%] ">
 		<BaseTagline
 			v-if="data.tagline"
 			:tagline="data.tagline"
@@ -78,7 +78,7 @@ const { setAttr } = useVisualEditing();
 		/>
 
 		<div
-			class=""
+			class="pt-10"
 			:data-directus="
 				setAttr({
 					collection: 'block_posts',
@@ -101,7 +101,7 @@ const { setAttr } = useVisualEditing();
 					:class="[
         ' transition-all duration-300 rounded-2xl hover:scale-[1.03] hover:-translate-y-1 hover:shadow-2xl dark:hover:shadow-secondary-100',
         ]"
-      class="h-full mt-10 rounded-none  bg-primary ring ring-secondary p-0 dark:bg-secondary-950 hover:bg-primary dark:hover:bg-secondary-950"
+      class="h-full mt-10 rounded-none  m-auto  bg-primary ring ring-secondary p-0 dark:bg-secondary-950 hover:bg-primary dark:hover:bg-secondary-950"
   					>
 				<SharedDirectusImage
 							v-if="post.image"

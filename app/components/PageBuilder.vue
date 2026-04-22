@@ -15,7 +15,7 @@ const validBlocks = computed(() =>
 
 <template>
 	<div v-for="block in validBlocks" class="px-10">
-		<div  :key="block.id" :data-background="block.background" class="py-16 w-fit m-auto lg:px-10">
+		<div  :key="block.id" :data-background="block.background" class="py-16 sm:w-fit m-auto lg:px-10">
 			<Container >
 				<BaseBlock :block="block" class="lg:w-full w-[90%] m-auto" />
 				
