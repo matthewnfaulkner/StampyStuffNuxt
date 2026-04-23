@@ -57,7 +57,6 @@
 
   
   onMounted(() => {
-    setTimeout(() => { loading.value = false }, 800) // example delay
     apply({
 		elements: [navigation.value?.navigationRef as HTMLElement, footer.value?.footerRef as HTMLElement],
 		onSaved: () => {

@@ -137,7 +137,7 @@ export default defineNuxtConfig({
 			  const path = page.permalink.startsWith('/') ? page.permalink : `/${page.permalink}`
 			  ctx.routes.add(path)
 			})
-
+      
 			// 3. Format and add Posts
 			posts.data?.forEach((post: any) => {
 			ctx.routes.add(`/blog/${post.slug}`)
