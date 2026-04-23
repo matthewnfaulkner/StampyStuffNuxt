@@ -1,10 +1,7 @@
 <script setup lang="ts">
   import { ref, onMounted } from 'vue'
 
-  const {isLoading } = useLoadingIndicator({
-    duration: 2000,
-    throttle: 0,
-  })
+  const { isLoading } = useLoadingIndicator()
 
   const {
     data: siteData,
@@ -58,11 +55,9 @@
     ogSiteName: unref(siteData)?.globals.title,
   });
 
-  
-  const nuxtApp = useNuxtApp();
+]
 
   onMounted(async() => {
-    await nextTick()
     apply({
 		elements: [navigation.value?.navigationRef as HTMLElement, footer.value?.footerRef as HTMLElement],
 		onSaved: () => {
