@@ -36,6 +36,7 @@ export default defineNuxtConfig({
   routeRules: {
 		// Never cache API routes - query params must always hit the server fresh
 		'/api/**': { isr: false },   // API always fresh
+    '/': { prerender: true },  // frozen at build, never revalidated
 
 		// Cache all page routes
 		'/**': { isr: 60 },
