@@ -17,6 +17,7 @@ export default defineNuxtConfig({
     '@nuxt/test-utils',
     '@primevue/nuxt-module',
     '@nuxtjs/i18n',
+    '@nuxtjs/sitemap',
     'nuxt-directus',
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
@@ -32,6 +33,13 @@ export default defineNuxtConfig({
       ]
     }
   },
+  routeRules: {
+		// Never cache API routes - query params must always hit the server fresh
+		'/api/**': { isr: false },   // API always fresh
+
+		// Cache all page routes
+		'/**': { isr: 60 },
+	},
   scripts: {
     registry: {
       stripe: true,
@@ -82,7 +90,6 @@ export default defineNuxtConfig({
   vue: {
           propsDestructure: true,
   },
-  ssr: true,
   // Image Configuration - https://image.nuxt.com/providers/directus
   image: {
           providers: {
@@ -97,4 +104,65 @@ export default defineNuxtConfig({
                   },
           },
   },
+  hooks: {
+		async 'prerender:routes'(ctx) {
+		// Ensure we only do this during a production build
+		if (process.env.NODE_ENV === 'development') return
+
+		const directusUrl = process.env.DIRECTUS_URL;
+		const token = process.env.DIRECTUS_PAYMENT_TOKEN // Use a static token if your collections are private
+
+		try {
+			console.log('Fetching dynamic routes for prerendering...')
+
+			// 1. Fetch Pages and Posts in parallel via standard fetch
+			// (This avoids issues with SDK initialization inside the config file)
+			const [pagesRes, postsRes, productRes] = await Promise.all([
+			fetch(`${directusUrl}/items/pages?fields=permalink&limit=-1`, {
+				headers: token ? { Authorization: `Bearer ${token}` } : {}
+			}),
+			fetch(`${directusUrl}/items/posts?filter[status][_eq]=published&fields=slug&limit=-1`, {
+				headers: token ? { Authorization: `Bearer ${token}` } : {}
+			}),
+      fetch(`${directusUrl}/items/products?filter[status][_neq]=inactive&fields=slug&limit=-1`, {
+				headers: token ? { Authorization: `Bearer ${token}` } : {}
+			})
+			])
+
+			const pages = await pagesRes.json()
+			const posts = await postsRes.json()
+      const products = await productRes.json();
+			// 2. Format and add Pages
+			pages.data?.forEach((page: any) => {
+			  const path = page.permalink.startsWith('/') ? page.permalink : `/${page.permalink}`
+			  ctx.routes.add(path)
+			})
+
+			// 3. Format and add Posts
+			posts.data?.forEach((post: any) => {
+			ctx.routes.add(`/blog/${post.slug}`)
+			})
+      
+      products.data?.forEach((product: any) => {
+			ctx.routes.add(`/shop/${product.slug}`)
+			})
+
+			console.log(`Successfully added ${ctx.routes.size} routes to prerender.`)
+		} catch (error) {
+			console.error('Prerender hook failed:', error)
+		}
+		}
+	},
+  sitemap: {
+		sources: ['/api/sitemap'],
+	},
+  nitro: {
+		prerender: {
+			// This is the most important part:
+      crawlLinks: false,
+
+			failOnError: false,
+		}
+	},
+  
 })

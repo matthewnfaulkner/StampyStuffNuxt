@@ -10,7 +10,7 @@ const { isVisualEditingEnabled, apply, setAttr } = useVisualEditing();
 const permalink = withoutTrailingSlash(withLeadingSlash(route.path));
 
 // Handle Live Preview adding version=main which is not required when fetching the main version.
-const version = route.query.version === 'main' ? undefined : (route.query.version as string);
+const version = route.query.version === 'main' ? 'main' : (route.query.version as string);
 
 const {
 	data: page,
