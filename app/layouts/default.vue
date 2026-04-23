@@ -3,11 +3,8 @@
 
   const {isLoading } = useLoadingIndicator({
     duration: 2000,
-    throttle: 200,
+    throttle: 0,
   })
-  const initializing = ref(true)
-  const loading = computed(() => initializing.value || isLoading.value)
-
 
   const {
     data: siteData,
@@ -64,11 +61,6 @@
   
   const nuxtApp = useNuxtApp();
 
-
-  nuxtApp.hook('app:suspense:resolve', () => {
-    initializing.value = false;
-  });
-
   onMounted(async() => {
     await nextTick()
     apply({
@@ -85,7 +77,7 @@
 
     <StickyHeader :site="siteData?.globals" :navigation="siteData?.headerNavigation" ref="navigationRef"/>
     <div>
-        <div v-if="loading" class="flex items-center justify-center h-screen">
+        <div v-if="isLoading" class="flex items-center justify-center h-screen">
           <StampySpinner :size="40" />
         </div>
         <UPage v-else class="mx-auto flex flex-col items-center px-4 py-1 max-w-dvw overflow-hidden min-h-screen">
