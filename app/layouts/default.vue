@@ -56,8 +56,9 @@
   });
 
   
-  onMounted(() => {
-    loading.value = false;
+  onMounted(async() => {
+    await nextTick()
+    loading.value = false
     apply({
 		elements: [navigation.value?.navigationRef as HTMLElement, footer.value?.footerRef as HTMLElement],
 		onSaved: () => {
