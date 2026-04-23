@@ -120,11 +120,12 @@ const pageFields = [
  * - Dynamic content blocks with real-time data fetching
  * - SEO metadata support
  */
-export default defineEventHandler(async (event) => {
+export default cachedEventHandler(async (event) => {
 	const query = getQuery(event);
-	
-		const { preview, token: rawToken, permalink: rawPermalink, id, version } = query;
 
+	const { preview, token: rawToken, permalink: rawPermalink, id, version, languageCode } = query;
+
+	
 	// Normalize permalink: ensure it starts with / and doesn't end with /
 	// This handles various URL formats consistently
 	const permalink = withoutTrailingSlash(withLeadingSlash(String(rawPermalink)));
@@ -132,6 +133,8 @@ export default defineEventHandler(async (event) => {
 	// Security: Only accept tokens when preview mode is explicitly enabled
 	// This prevents unauthorized access to draft content
 	const token = preview === 'true' && rawToken ? String(rawToken) : null;
+
+	const config = useRuntimeConfig();
 
 	try {
 		let page: Page;
@@ -198,8 +201,8 @@ export default defineEventHandler(async (event) => {
 					token as string,
 					readItems('pages', {
 						filter: token
-							? { permalink: { _eq: permalink } }
-							: { permalink: { _eq: permalink }, status: { _eq: 'published' } },
+							? { permalink: { _eq: permalink }, site : {id: {_eq: config.public.siteId} }}
+							: { permalink: { _eq: permalink }, status: { _eq: 'published' }, site : {id: {_eq: config.public.siteId} } },
 						limit: 1,
 						fields: pageFields as any,
 						// Deep query options for complex nested data:
@@ -254,7 +257,14 @@ export default defineEventHandler(async (event) => {
 		}
 
 		return page;
-	} catch {
+	} catch  {
 		throw createError({ statusCode: 500, statusMessage: 'Page not found' });
 	}
+}, {
+  maxAge: 3600,
+  getKey: (event) => {
+    const { permalink, version } = getQuery(event)
+    return `page-${permalink}`
+  },
+  shouldBypassCache: (event) => getQuery(event).preview === 'true',
 });
