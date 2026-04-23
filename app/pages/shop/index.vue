@@ -56,6 +56,7 @@ const {
 	refresh,
 } = await useFetch<{products: Product[], count: number}>('/api/products', {
 	key: `products`,
+	getCachedData: (key, nuxtApp) => nuxtApp.payload.data[key] ?? nuxtApp.static.data[key],
   query: {
     limit: -1,
     page: currentPage,

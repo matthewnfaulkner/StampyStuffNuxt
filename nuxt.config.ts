@@ -39,7 +39,7 @@ export default defineNuxtConfig({
     '/': { prerender: true },  // frozen at build, never revalidated
 
 		// Cache all page routes
-		'/**': { isr: 60 },
+		'/**': { prerender: true },
 	},
   scripts: {
     registry: {

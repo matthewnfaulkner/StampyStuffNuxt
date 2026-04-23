@@ -1,4 +1,4 @@
-export default defineEventHandler(async (event) => {
+export default cachedEventHandler(async (event) => {
     
     const query = getQuery(event);
 
