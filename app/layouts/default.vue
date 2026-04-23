@@ -55,7 +55,7 @@
     ogSiteName: unref(siteData)?.globals.title,
   });
 
-]
+
 
   onMounted(async() => {
     apply({
@@ -75,7 +75,7 @@
         <div v-if="isLoading" class="flex items-center justify-center h-screen">
           <StampySpinner :size="40" />
         </div>
-        <UPage v-else class="mx-auto flex flex-col items-center px-4 py-1 max-w-dvw overflow-hidden min-h-screen">
+        <UPage :v-show="isLoading" class="mx-auto flex flex-col items-center px-4 py-1 max-w-dvw overflow-hidden min-h-screen">
           <UPageBody class="pt-10  sm:max-w-none">
                 <slot/>                       
           </UPageBody>
