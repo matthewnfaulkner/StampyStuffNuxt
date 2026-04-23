@@ -2,6 +2,11 @@
   import { ref, onMounted } from 'vue'
 
   const { isLoading } = useLoadingIndicator()
+  const pageReady = ref(false)
+  onMounted(() => pageReady.value = true)
+
+// Total visibility logic
+  const showContent = computed(() => pageReady.value && !isLoading.value)
 
   const {
     data: siteData,
@@ -72,7 +77,7 @@
 
     <StickyHeader :site="siteData?.globals" :navigation="siteData?.headerNavigation" ref="navigationRef"/>
     <div>
-        <div v-if="isLoading" class="flex items-center justify-center h-screen">
+        <div v-if="showContent" class="flex items-center justify-center h-screen">
           <StampySpinner :size="40" />
         </div>
         <UPage :v-show="isLoading" class="mx-auto flex flex-col items-center px-4 py-1 max-w-dvw overflow-hidden min-h-screen">
