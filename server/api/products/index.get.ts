@@ -129,4 +129,10 @@ export default cachedEventHandler(async (event) => {
     } catch (error){
         throw createError(error);
     }
+},
+{
+  maxAge: 3600,
+  getKey: () => {
+    return `products`
+  },
 });

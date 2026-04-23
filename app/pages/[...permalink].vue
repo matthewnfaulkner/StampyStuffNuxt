@@ -17,7 +17,7 @@ const {
 	error,
 	refresh,
 } = await useFetch<Page>('/api/pages/one', {
-	key: `pages-${permalink}`,
+	key: `page-${permalink}`,
 	query: {
 		permalink,
 		preview: enabled.value ? true : undefined,
