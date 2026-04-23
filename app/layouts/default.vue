@@ -56,9 +56,16 @@
   });
 
   
+  const nuxtApp = useNuxtApp();
+  nuxtApp.hook('app:suspense:resolve', () => {
+    loading.value = false;
+  });
+  nuxtApp.hook('page:finish', () => {
+    loading.value = false;
+  });
+
   onMounted(async() => {
     await nextTick()
-    loading.value = false
     apply({
 		elements: [navigation.value?.navigationRef as HTMLElement, footer.value?.footerRef as HTMLElement],
 		onSaved: () => {
