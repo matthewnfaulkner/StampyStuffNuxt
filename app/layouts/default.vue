@@ -14,7 +14,7 @@
     error: siteError,
     refresh,
   } = await useFetch('/api/site-data', {
-    key: 'site-data',
+    key: 'site-data', 
   });
 
   const route = useRoute()
